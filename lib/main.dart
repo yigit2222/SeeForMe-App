@@ -35,14 +35,16 @@ late final ValueNotifier<String> speechRateModeNotifier = ValueNotifier<String>(
 late final ValueNotifier<double> customSpeechRateNotifier = ValueNotifier<double>(prefs.getDouble('customSpeechRate') ?? 1.0);
 late final ValueNotifier<String> appThemeNotifier = ValueNotifier<String>(prefs.getString('appTheme') ?? 'High Contrast');
 late final ValueNotifier<bool> isAutoTorchEnabledNotifier = ValueNotifier<bool>(prefs.getBool('isAutoTorchEnabled') ?? true);
-late final ValueNotifier<String> serverIpAddressNotifier = ValueNotifier<String>(prefs.getString('serverIpAddress') ?? '192.168.1.100');
+late ValueNotifier<String> serverIpAddressNotifier = ValueNotifier<String>(prefs.getString('serverIpAddress') ?? '192.168.1.100');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
   prefs = await SharedPreferences.getInstance();
 
-  await globalNetworkManager.init('192.168.1.100', 5005);
+  serverIpAddressNotifier = ValueNotifier<String>(prefs.getString('serverIpAddress') ?? '192.168.1.100');
+
+  await globalNetworkManager.init(serverIpAddressNotifier.value, 5005);
 
   runApp(const SeeForMe());
 }
@@ -215,7 +217,6 @@ class _LiveScreenState extends State<LiveScreen> {
   CameraController? _cameraController;
   bool isRunning = false;
   bool isCameraInitialized = false;
-  String detectedText = 'System Ready.';
 
   final ValueNotifier<bool> isTorchNotifier = ValueNotifier<bool>(false);
   bool isManualTorchOverride = false;
@@ -254,14 +255,10 @@ class _LiveScreenState extends State<LiveScreen> {
           isCameraInitialized = true;
         });
       } catch (e) {
-        setState(() {
-          detectedText = 'Camera Error: $e';
-        });
+        debugPrint('Camera Error: $e');
       }
     } else {
-      setState(() {
-        detectedText = 'Camera Permission Denied.';
-      });
+      debugPrint('Camera Permission Denied.');
     }
   }
 
@@ -272,7 +269,6 @@ class _LiveScreenState extends State<LiveScreen> {
 
     setState(() {
       isRunning = true;
-      detectedText = 'Session active. Sending 1 FPS...';
     });
 
     _cameraController!.startImageStream((CameraImage image) {
@@ -325,7 +321,6 @@ class _LiveScreenState extends State<LiveScreen> {
     setState(() {
       isRunning = false;
       isTorchNotifier.value = false;
-      detectedText = 'Session stopped.';
     });
   }
 
@@ -534,14 +529,6 @@ class _LiveScreenState extends State<LiveScreen> {
                                     ),
                                   );
                                 }
-                            ),
-
-                            Center(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                color: Colors.black.withOpacity(0.7),
-                                child: Text(detectedText, textAlign: TextAlign.center, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: accentColor)),
-                              ),
                             ),
                           ],
                         ),
