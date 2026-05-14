@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:vibration/vibration.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:bitirme_projesi_2/network_manager.dart';
 import 'settings_screen.dart';
@@ -18,22 +19,28 @@ late List<CameraDescription> cameras;
 
 // Global State Management (Notifiers)
 final NetworkManager globalNetworkManager = NetworkManager();
-final ValueNotifier<bool> isVibrationEnabledNotifier = ValueNotifier<bool>(true);
+late SharedPreferences prefs;
+
+// 🔴 Transient Live Data (Does not need saving)
 final ValueNotifier<List<String>> detectionBoxesNotifier = ValueNotifier<List<String>>([]);
-final ValueNotifier<bool> isBoundingBoxEnabledNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<double> audioVolumeNotifier = ValueNotifier<double>(1.0);
-final ValueNotifier<String> speechRateNotifier = ValueNotifier<String>('Normal');
-final ValueNotifier<String> descriptionDetailNotifier = ValueNotifier<String>('Standard');
-final ValueNotifier<String> currentLanguageNotifier = ValueNotifier<String>('en');
-final ValueNotifier<String> speechRateModeNotifier = ValueNotifier<String>('Normal');
-final ValueNotifier<double> customSpeechRateNotifier = ValueNotifier<double>(1.0);
-final ValueNotifier<String> appThemeNotifier = ValueNotifier<String>('High Contrast');
-final ValueNotifier<bool> isAutoTorchEnabledNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<String> serverIpAddressNotifier = ValueNotifier<String>('192.168.1.100');
+
+// 🟢 Persistent User Settings
+late final ValueNotifier<bool> isVibrationEnabledNotifier = ValueNotifier<bool>(prefs.getBool('isVibrationEnabled') ?? true);
+late final ValueNotifier<bool> isBoundingBoxEnabledNotifier = ValueNotifier<bool>(prefs.getBool('isBoundingBoxEnabled') ?? true);
+late final ValueNotifier<double> audioVolumeNotifier = ValueNotifier<double>(prefs.getDouble('audioVolume') ?? 1.0);
+late final ValueNotifier<String> speechRateNotifier = ValueNotifier<String>(prefs.getString('speechRate') ?? 'Normal');
+late final ValueNotifier<String> descriptionDetailNotifier = ValueNotifier<String>(prefs.getString('descriptionDetail') ?? 'Standard');
+late final ValueNotifier<String> currentLanguageNotifier = ValueNotifier<String>(prefs.getString('currentLanguage') ?? 'en');
+late final ValueNotifier<String> speechRateModeNotifier = ValueNotifier<String>(prefs.getString('speechRateMode') ?? 'Normal');
+late final ValueNotifier<double> customSpeechRateNotifier = ValueNotifier<double>(prefs.getDouble('customSpeechRate') ?? 1.0);
+late final ValueNotifier<String> appThemeNotifier = ValueNotifier<String>(prefs.getString('appTheme') ?? 'High Contrast');
+late final ValueNotifier<bool> isAutoTorchEnabledNotifier = ValueNotifier<bool>(prefs.getBool('isAutoTorchEnabled') ?? true);
+late final ValueNotifier<String> serverIpAddressNotifier = ValueNotifier<String>(prefs.getString('serverIpAddress') ?? '192.168.1.100');
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
+  prefs = await SharedPreferences.getInstance();
 
   await globalNetworkManager.init('192.168.1.100', 5005);
 

@@ -3,11 +3,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:bitirme_projesi_2/network_manager.dart';
 import 'package:bitirme_projesi_2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Tests for hardware accessibility features, including Auto-Torch
 // hysteresis logic and Text to Speech toggle.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
 
   setUpAll(() {
     const MethodChannel('xyz.luan/audioplayers.global')

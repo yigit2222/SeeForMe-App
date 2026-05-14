@@ -1,10 +1,17 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bitirme_projesi_2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Isolated tests for session lifecycle management.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
 
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(

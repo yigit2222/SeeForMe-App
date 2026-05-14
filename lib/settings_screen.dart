@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'network_manager.dart';
-import 'main.dart';
+import 'main.dart'; // Gives access to the global 'prefs' variable
 
 // Provides a user interface for configuring application preferences,
 // including visual themes, accessibility options, and network settings.
@@ -230,6 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if (newIp.isNotEmpty) {
                   serverIpAddressNotifier.value = newIp;
                   globalNetworkManager.updateServerIp(newIp);
+                  prefs.setString('serverIpAddress', newIp);
                 }
                 Navigator.of(context).pop();
               },
@@ -286,6 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     accentColor: accentColor,
                     onChanged: (v) {
                       appThemeNotifier.value = v;
+                      prefs.setString('appTheme', v);
                     },
                   ),
                 ],
@@ -319,6 +321,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               if (newCode != null) {
                                 currentLanguageNotifier.value = newCode;
                                 globalNetworkManager.sendCommand("LANG:$newCode");
+                                prefs.setString('currentLanguage', newCode);
                               }
                             },
                           ),
@@ -344,6 +347,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               onChanged: (v) {
                                 audioVolumeNotifier.value = v;
                                 globalNetworkManager.setVolume(v);
+                                prefs.setDouble('audioVolume', v);
                               },
                             ),
                           ),
@@ -364,6 +368,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: InkWell(
                               onTap: () {
                                 speechRateModeNotifier.value = title;
+                                prefs.setString('speechRateMode', title);
+
                                 if (title == 'Slow') {
                                   globalNetworkManager.sendCommand("RATE:0.75");
                                   globalNetworkManager.setAudioSpeed(0.75);
@@ -441,6 +447,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           customSpeechRateNotifier.value = v;
                                           globalNetworkManager.sendCommand("RATE:$v");
                                           globalNetworkManager.setAudioSpeed(v);
+                                          prefs.setDouble('customSpeechRate', v);
                                         },
                                       ),
                                     ),
@@ -473,6 +480,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onChanged: (v) {
                           descriptionDetailNotifier.value = v;
                           globalNetworkManager.sendCommand("DETAIL:$v");
+                          prefs.setString('descriptionDetail', v);
                         },
                       );
                     },
@@ -531,6 +539,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textColor: textColor,
                         onChanged: (bool newValue) {
                           globalNetworkManager.isTtsEnabled.value = newValue;
+                          prefs.setBool('isTtsEnabled', newValue);
+
                           if (newValue) {
                             globalNetworkManager.tts.speak("Voice guidance enabled");
                           } else {
@@ -551,6 +561,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textColor: textColor,
                         onChanged: (v) {
                           isVibrationEnabledNotifier.value = v;
+                          prefs.setBool('isVibrationEnabled', v);
+
                           globalNetworkManager.announce(v ? "Haptic feedback enabled" : "Haptic feedback disabled");
                         },
                       );
@@ -566,6 +578,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textColor: textColor,
                         onChanged: (v) {
                           isBoundingBoxEnabledNotifier.value = v;
+                          prefs.setBool('isBoundingBoxEnabled', v);
+
                           globalNetworkManager.announce(v ? "Visual boxes enabled" : "Visual boxes disabled");
                         },
                       );
@@ -582,6 +596,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textColor: textColor,
                         onChanged: (v) {
                           isAutoTorchEnabledNotifier.value = v;
+                          prefs.setBool('isAutoTorchEnabled', v);
+
                           globalNetworkManager.announce(v ? "Auto flashlight enabled" : "Auto flashlight disabled");
                         },
                       );

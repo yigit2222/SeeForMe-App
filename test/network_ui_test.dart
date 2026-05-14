@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bitirme_projesi_2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Tests the UI components related to network state, ensuring the badge
 // accurately reflects the connection status.
 void main() {
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
   testWidgets('Network Badge should reflect connection status', (WidgetTester tester) async {
     globalNetworkManager.isServerConnected.value = false;
 

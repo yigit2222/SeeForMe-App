@@ -2,11 +2,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:bitirme_projesi_2/network_manager.dart';
 import 'package:bitirme_projesi_2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Verifies the configuration and routing logic for the server connection,
 // ensuring IP and Port parsing functions accurately.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
 
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger

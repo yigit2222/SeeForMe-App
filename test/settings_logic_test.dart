@@ -1,8 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bitirme_projesi_2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Tests the internal state logic for the settings page notifiers.
 void main() {
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
   group('Settings Logic & State Tests', () {
 
     test('Theme Notifier should update correctly', () {

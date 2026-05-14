@@ -2,11 +2,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bitirme_projesi_2/main.dart';
 import 'package:bitirme_projesi_2/network_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 // Validates the AI system's lifecycle integrity, including heartbeat tracking,
 // state flagging, and buffer management.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUpAll(() async {
+    // Tell SharedPreferences to use a fake dictionary for testing
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
+  });
 
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
