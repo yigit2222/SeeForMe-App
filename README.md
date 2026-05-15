@@ -37,7 +37,7 @@ The project follows a **Client-Server architecture** optimized for mobile perfor
 The system underwent rigorous validation according to **ISO/IEC/IEEE 29119** standards:
 * **100% Pass Rate:** Successfully passed all 10 core functional test cases, including end-to-end workflow and network failure handling.
 * **Automated Suites:** Verified by 17 automated mobile unit tests and 7 automated server unit tests.
-* **Performance:** End-to-end latency remains consistently under the safety-critical 3-second threshold.
+* **Performance:** End-to-end latency remains consistently under the safety-critical 4-second threshold.
 
 ## 📂 Installation & Setup
 
@@ -48,8 +48,9 @@ The system underwent rigorous validation according to **ISO/IEC/IEEE 29119** sta
 
 ### Mobile
 1. Install the Flutter SDK.
-2. Connect an Android device and run: `flutter run --release`.
-3. Configure the Server IP in the application settings.
+2. Connect an Android device and fetch dependencies: `flutter pub get`.
+3. Run the application: `flutter run --release`.
+4. Configure the Server IP in the application settings.
 
 ## 👥 The Team
 * **İkra Yiğit Karaman**
